@@ -37,7 +37,7 @@ namespace Ocelot.Provider.Static
             IMemoryCache cache,
             IOcelotLoggerFactory factory)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _configuration = configuration;
             _serviceName = downstreamReRoute.ServiceName.ToLower();
             _providerConfiguration = providerConfiguration ?? throw new ArgumentNullException(nameof(providerConfiguration));
             _cache = cache ?? throw new ArgumentNullException(nameof(cache));

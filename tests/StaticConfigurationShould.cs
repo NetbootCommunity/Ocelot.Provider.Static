@@ -111,11 +111,11 @@ namespace Ocelot.Provider.Static.Tests
                 cache,
                 Substitute.For<IOcelotLoggerFactory>());
 
-            Service service = (await appConfiguration.Get()).First();
-            cache.Remove("Service_users");
-            Service service2 = (await appConfiguration.Get()).First();
+            List<Service> service = (await appConfiguration.Get()).ToList();
+            cache.Remove("Service_users".ToLower());
+            List<Service> service2 = (await appConfiguration.Get()).ToList();
 
-            service.Should().NotBe(service2);
+            service.Should().NotContain(service2);
         }
 
         private static IConfiguration GetConfiguration() =>
