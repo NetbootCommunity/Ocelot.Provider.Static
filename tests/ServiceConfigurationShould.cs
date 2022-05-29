@@ -15,7 +15,7 @@ namespace Ocelot.Provider.Static.Tests
             var serviceCollection = new ServiceCollection();
             var builder = new OcelotBuilder(serviceCollection, new ConfigurationBuilder().Build());
 
-            builder.AddAppConfiguration();
+            builder.AddStaticConfiguration();
 
             ServiceDiscoveryFinderDelegate factory = serviceCollection
                 .BuildServiceProvider()

@@ -4,10 +4,6 @@ using Ocelot.Configuration;
 using Ocelot.Logging;
 using Ocelot.ServiceDiscovery.Providers;
 using Ocelot.Values;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Ocelot.Provider.Static
 {
@@ -41,10 +37,10 @@ namespace Ocelot.Provider.Static
             IMemoryCache cache,
             IOcelotLoggerFactory factory)
         {
-            _configuration = configuration;
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _serviceName = downstreamReRoute.ServiceName.ToLower();
-            _providerConfiguration = providerConfiguration;
-            _cache = cache;
+            _providerConfiguration = providerConfiguration ?? throw new ArgumentNullException(nameof(providerConfiguration));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
             _logger = factory.CreateLogger<StaticConfiguration>();
         }
 
@@ -54,17 +50,19 @@ namespace Ocelot.Provider.Static
         public Task<List<Service>> Get()
             => Task.FromResult(GetServices());
 
+        /// <summary>
+        /// Gets the ocelot services configurations with caching.
+        /// </summary>
         private List<Service> GetServices()
         {
-            if (!_cache.TryGetValue(GetKey(), out Service service))
+            if (!_cache.TryGetValue(GetCacheKey(), out List<Service> services))
             {
-                service = GetServiceInner();
-
-                if (service != null)
+                services = GetServiceConfigurations();
+                if (services != null)
                 {
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetAbsoluteExpiration(GetExpiration());
-                    _cache.Set(GetKey(), service, cacheEntryOptions);
+                        .SetAbsoluteExpiration(GetCacheExpiration());
+                    _cache.Set(GetCacheKey(), services, cacheEntryOptions);
                 }
                 else
                 {
@@ -74,28 +72,59 @@ namespace Ocelot.Provider.Static
                 }
             }
 
-            return new List<Service>() { service };
+            return services;
         }
 
-        private TimeSpan GetExpiration()
+        /// <summary>
+        /// Gets the ocelot service configurations.
+        /// </summary>
+        /// <returns></returns>
+        private List<Service> GetServiceConfigurations()
+        {
+            var configs = _configuration.GetSection(GetSectionName())
+                .Get<Dictionary<string, List<ServiceConfiguration>>>()
+                .Where(x => x.Key.Equals(_serviceName, StringComparison.OrdinalIgnoreCase))
+                .SelectMany(x => x.Value)
+                .ToList();
+            if (configs == null)
+                return default;
+
+            var services = new List<Service>();
+            foreach (var config in configs)
+            {
+                services.Add(new Service(
+                    name: _serviceName,
+                    hostAndPort: new ServiceHostAndPort(
+                        config.DownstreamPath.Host,
+                        config.DownstreamPath.Port,
+                        config.DownstreamPath.Scheme),
+                    string.Empty,
+                    string.Empty,
+                    Array.Empty<string>()));
+            }
+            return services;
+        }
+
+        /// <summary>
+        /// Gets the cache expiration.
+        /// </summary>
+        /// <returns></returns>
+        private TimeSpan GetCacheExpiration()
             => _providerConfiguration.PollingInterval > 0
             ? TimeSpan.FromMilliseconds(_providerConfiguration.PollingInterval)
             : TimeSpan.FromMinutes(DefaultCacheExpirationInMinutes);
 
-        private Service GetServiceInner() =>
-            _configuration
-                .GetSection(GetSectionName())
-                .GetChildren()
-                .Where(s => s.Key.Equals(_serviceName, System.StringComparison.OrdinalIgnoreCase))
-                .Select(s =>
-                {
-                    ServiceConfiguration src = s.Get<ServiceConfiguration>();
-                    src.Name = s.Key;
-                    return src.ToService();
-                }).FirstOrDefault();
+        /// <summary>
+        /// Gets the cache key.
+        /// </summary>
+        /// <returns></returns>
+        private string GetCacheKey()
+            => $"Service_{_serviceName}".ToLower();
 
-        private string GetKey() => $"Service_{_serviceName}";
-
+        /// <summary>
+        /// Gets the name of the section.
+        /// </summary>
+        /// <returns></returns>
         private string GetSectionName() =>
             _configuration.GetValue<string>(SectionNameConfigKey) ?? DefaultServiceSectionName;
     }

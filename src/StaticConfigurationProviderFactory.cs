@@ -4,23 +4,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
 using Ocelot.Logging;
 
-namespace Ocelot.Provider.Static
+namespace Ocelot.Provider.Static;
+
+/// <summary>
+/// Factory for creating <see cref="StaticConfiguration"/> provider.
+/// </summary>
+public static class StaticConfigurationProviderFactory
 {
     /// <summary>
-    /// Factory for creating <see cref="StaticConfiguration"/> provider.
+    /// Get <see cref="StaticConfiguration"/> provider.
     /// </summary>
-    public static class StaticConfigurationProviderFactory
+    public static readonly ServiceDiscoveryFinderDelegate Get = (provider, config, reRoute) =>
     {
-        /// <summary>
-        /// Get <see cref="StaticConfiguration"/> provider.
-        /// </summary>
-        public static ServiceDiscoveryFinderDelegate Get = (provider, config, reRoute) =>
-        {
-            IConfiguration configuration = provider.GetService<IConfiguration>();
-            IMemoryCache cache = provider.GetService<IMemoryCache>();
-            IOcelotLoggerFactory loggerFactory = provider.GetService<IOcelotLoggerFactory>();
+        IConfiguration configuration = provider.GetService<IConfiguration>()!;
+        IMemoryCache cache = provider.GetService<IMemoryCache>()!;
+        IOcelotLoggerFactory loggerFactory = provider.GetService<IOcelotLoggerFactory>()!;
 
-            return new StaticConfiguration(configuration, reRoute, config, cache, loggerFactory);
-        };
-    }
+        return new StaticConfiguration(configuration, reRoute, config, cache, loggerFactory);
+    };
 }

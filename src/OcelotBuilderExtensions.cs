@@ -1,21 +1,20 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Ocelot.DependencyInjection;
 
-namespace Ocelot.Provider.Static
+namespace Ocelot.Provider.Static;
+
+/// <summary>
+/// <see cref="IOcelotBuilder"/> extensions.
+/// </summary>
+public static class OcelotBuilderExtensions
 {
     /// <summary>
-    /// <see cref="IOcelotBuilder"/> extensions.
+    /// Adds the <see cref="StaticConfiguration"/> provider.
     /// </summary>
-    public static class OcelotBuilderExtensions
+    /// <param name="builder">The builder.</param>
+    public static IOcelotBuilder AddStaticConfiguration(this IOcelotBuilder builder)
     {
-        /// <summary>
-        /// Adds the <see cref="StaticConfiguration"/> provider.
-        /// </summary>
-        /// <param name="builder">The builder.</param>
-        public static IOcelotBuilder AddAppConfiguration(this IOcelotBuilder builder)
-        {
-            builder.Services.AddSingleton(StaticConfigurationProviderFactory.Get);
-            return builder;
-        }
+        builder.Services.AddSingleton(StaticConfigurationProviderFactory.Get);
+        return builder;
     }
 }
