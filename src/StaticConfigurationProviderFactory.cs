@@ -4,15 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Memory;
 using Ocelot.Logging;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration
+namespace Ocelot.Provider.Static
 {
     /// <summary>
-    /// Factory for creating <see cref="AppConfiguration"/> provider.
+    /// Factory for creating <see cref="StaticConfiguration"/> provider.
     /// </summary>
-    public static class AppConfigurationProviderFactory
+    public static class StaticConfigurationProviderFactory
     {
         /// <summary>
-        /// Get <see cref="AppConfiguration"/> provider.
+        /// Get <see cref="StaticConfiguration"/> provider.
         /// </summary>
         public static ServiceDiscoveryFinderDelegate Get = (provider, config, reRoute) =>
         {
@@ -20,7 +20,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration
             IMemoryCache cache = provider.GetService<IMemoryCache>();
             IOcelotLoggerFactory loggerFactory = provider.GetService<IOcelotLoggerFactory>();
 
-            return new AppConfiguration(configuration, reRoute, config, cache, loggerFactory);
+            return new StaticConfiguration(configuration, reRoute, config, cache, loggerFactory);
         };
     }
 }

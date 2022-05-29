@@ -5,7 +5,7 @@ using Ocelot.DependencyInjection;
 using Ocelot.ServiceDiscovery;
 using Xunit;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
+namespace Ocelot.Provider.Static.Tests
 {
     public class ServiceConfigurationShould
     {

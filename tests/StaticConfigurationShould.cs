@@ -12,9 +12,9 @@ using System.Collections.Generic;
 using NSubstitute;
 using Ocelot.Logging;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
+namespace Ocelot.Provider.Static.Tests
 {
-    public class AppConfigurationShould
+    public class StaticConfigurationShould
     {
         [Theory]
         [InlineData("Users", "http://localhost:9003/")]
@@ -26,7 +26,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
         {
             IConfiguration configuration = GetConfiguration();
 
-            var appConfiguration = new AppConfiguration(
+            var appConfiguration = new StaticConfiguration(
                 configuration,
                 new DownstreamRouteBuilder().WithServiceName(serviceName).Build(),
                 new ServiceProviderConfiguration("", "", "", 1, "", "", 1),
@@ -48,7 +48,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
         {
             IConfiguration configuration = GetConfiguration();
 
-            var appConfiguration = new AppConfiguration(
+            var appConfiguration = new StaticConfiguration(
                 configuration,
                 new DownstreamRouteBuilder().WithServiceName("Users").Build(),
                 new ServiceProviderConfiguration("", "", "", 1, "", "", 300000),
@@ -66,7 +66,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
         {
             IConfiguration configuration = GetConfiguration();
 
-            var appConfiguration = new AppConfiguration(
+            var appConfiguration = new StaticConfiguration(
                 configuration,
                 new DownstreamRouteBuilder().WithServiceName("Service1").Build(),
                 new ServiceProviderConfiguration("", "", "", 1, "", "", 300000),
@@ -86,7 +86,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
                 .AddJsonFile("ocelot.json")
                 .Build();
 
-            var appConfiguration = new AppConfiguration(
+            var appConfiguration = new StaticConfiguration(
                 configuration,
                 new DownstreamRouteBuilder().WithServiceName("ToDos").Build(),
                 new ServiceProviderConfiguration("", "", "", 1, "", "", 300000),
@@ -104,7 +104,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
             IConfiguration configuration = GetConfiguration();
             var cache = new MemoryCache(new MemoryCacheOptions());
 
-            var appConfiguration = new AppConfiguration(
+            var appConfiguration = new StaticConfiguration(
                 configuration,
                 new DownstreamRouteBuilder().WithServiceName("Users").Build(),
                 new ServiceProviderConfiguration("", "", "", 1, "", "", 300000),

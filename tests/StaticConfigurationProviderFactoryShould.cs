@@ -7,9 +7,9 @@ using Ocelot.DependencyInjection;
 using Ocelot.ServiceDiscovery.Providers;
 using Xunit;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
+namespace Ocelot.Provider.Static.Tests
 {
-    public class AppConfigurationProviderFactoryShould
+    public class StaticConfigurationProviderFactoryShould
     {
         [Fact]
         public void CreateProvider()
@@ -19,7 +19,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration.Tests
             builder.Services.AddSingleton(new ConfigurationBuilder().Build());
             builder.Services.AddMemoryCache();
 
-            var factory = AppConfigurationProviderFactory.Get;
+            var factory = StaticConfigurationProviderFactory.Get;
 
             IServiceDiscoveryProvider provider = factory(
                 services.BuildServiceProvider(),

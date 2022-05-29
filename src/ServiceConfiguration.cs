@@ -1,7 +1,7 @@
 ﻿using Ocelot.Values;
 using System;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration
+namespace Ocelot.Provider.Static
 {
     internal class ServiceConfiguration
     {

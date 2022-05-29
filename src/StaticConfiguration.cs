@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MMLib.Ocelot.Provider.AppConfiguration
+namespace Ocelot.Provider.Static
 {
     /// <summary>
     /// Provider for getting services from app configuration.
     /// </summary>
-    public class AppConfiguration : IServiceDiscoveryProvider
+    public class StaticConfiguration : IServiceDiscoveryProvider
     {
         private const int DefaultCacheExpirationInMinutes = 10;
         private const string DefaultServiceSectionName = "Services";
@@ -27,14 +27,14 @@ namespace MMLib.Ocelot.Provider.AppConfiguration
         private readonly IOcelotLogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppConfiguration"/> class.
+        /// Initializes a new instance of the <see cref="StaticConfiguration"/> class.
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="downstreamReRoute">The downstream re route.</param>
         /// <param name="providerConfiguration">The provider configuration.</param>
         /// <param name="cache">The cache.</param>
         /// <param name="factory">The factory.</param>
-        public AppConfiguration(
+        public StaticConfiguration(
             IConfiguration configuration,
             DownstreamRoute downstreamReRoute,
             ServiceProviderConfiguration providerConfiguration,
@@ -45,7 +45,7 @@ namespace MMLib.Ocelot.Provider.AppConfiguration
             _serviceName = downstreamReRoute.ServiceName.ToLower();
             _providerConfiguration = providerConfiguration;
             _cache = cache;
-            _logger = factory.CreateLogger<AppConfiguration>();
+            _logger = factory.CreateLogger<StaticConfiguration>();
         }
 
         /// <summary>
